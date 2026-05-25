@@ -30,11 +30,15 @@ public class PilotoController {
         this.pilotoService = pilotoService;
     }
 
+    //Obtener todos los pilotos
+
     @GetMapping
     public ResponseEntity<List<Piloto>> listarPilotos(){
         List<Piloto> pilotos = pilotoService.obtenerPilotos();
         return ResponseEntity.ok(pilotos);
     }
+
+    //Agregar nuevos pilotos
 
     @PostMapping
     public ResponseEntity<Piloto> agregarPilotos(@Valid @RequestBody CreatePilotoRequest request){
@@ -42,11 +46,15 @@ public class PilotoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(piloto);
     }
 
+    //Actualizar datos de pilotos
+
     @PutMapping("{id}")
     public ResponseEntity<Piloto> actualizarPilotos(@PathVariable int idPiloto, @Valid @RequestBody UpdatePilotoRequest request){
         Piloto actuPiloto = pilotoService.actualizarPiloto(PilotoMapper.toModel(request));
         return ResponseEntity.ok(actuPiloto);
     }
+
+    //Eliminar pilotos 
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> eliminarPiloto(@PathVariable int idPiloto){
