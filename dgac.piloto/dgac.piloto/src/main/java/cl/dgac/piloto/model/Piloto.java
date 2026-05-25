@@ -25,16 +25,16 @@ public class Piloto {
     @Column(name = "rutPiloto", nullable=false)
     private int rutPiloto;
 
-    @Column(name = "pNombre", nullable = false, length = 60)
+    @Column(name = "pNombre", nullable = false, length = 30)
     private String pNombrePiloto;
 
-    @Column(name = "sNombre", length = 60)
+    @Column(name = "sNombre", length = 30)
     private String sNombrePiloto;
 
-    @Column(name = "apPaterno", nullable = false, length = 60)
+    @Column(name = "apPaterno", nullable = false, length = 30)
     private String apPaternoPiloto;
 
-    @Column(name = "apMaterno", nullable = false, length = 60)
+    @Column(name = "apMaterno", nullable = false, length = 30)
     private String apMaternoPiloto;
 
 

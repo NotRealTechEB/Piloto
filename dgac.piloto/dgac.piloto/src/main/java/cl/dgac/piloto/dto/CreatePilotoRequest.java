@@ -10,7 +10,7 @@ public record CreatePilotoRequest(
 
     //Ingreso de nombre(s) y apellidos
     @NotBlank(message = "Debe ingresar el primer nombre del piloto") String pNombrePiloto,
-    @Size(max = 60, message = "El segundo nombre no puede ser mayor a 60 caracteres")String sNombrePiloto,
+    @Size(max = 30, message = "El segundo nombre no puede ser mayor a 30 caracteres")String sNombrePiloto,
     @NotBlank(message = "Debe ingresar el apellido paterno del piloto") String apPaternoPiloto,
     @NotBlank(message = "Debe ingresar el apellido materno del piloto") String apMaternoPiloto,
 

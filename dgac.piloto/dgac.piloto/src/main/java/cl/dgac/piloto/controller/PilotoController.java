@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import cl.dgac.piloto.dto.CreatePilotoRequest;
 import cl.dgac.piloto.dto.UpdatePilotoRequest;
@@ -25,9 +26,11 @@ import jakarta.validation.Valid;
 public class PilotoController {
     
     private final PilotoService pilotoService;
+    private final WebClient licenciaApiWebClient;
 
-    public PilotoController(PilotoService pilotoService){
+    public PilotoController(PilotoService pilotoService, WebClient licenciaApiWebClient){
         this.pilotoService = pilotoService;
+        this.licenciaApiWebClient = licenciaApiWebClient;
     }
 
     //Obtener todos los pilotos
