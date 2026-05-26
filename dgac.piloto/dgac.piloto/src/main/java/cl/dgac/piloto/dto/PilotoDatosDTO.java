@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LicenciaResponse {
-    private int fechaVen;
+public class PilotoDatosDTO {
+    private int idPiloto;
+    private int rutPiloto;
+    private String nombreCompleto;
 }

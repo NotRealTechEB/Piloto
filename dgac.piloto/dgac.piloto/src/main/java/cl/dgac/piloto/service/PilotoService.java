@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cl.dgac.piloto.dto.PilotoDatosDTO;
 import cl.dgac.piloto.model.Piloto;
 import cl.dgac.piloto.repository.PilotoRepository;
 
@@ -43,6 +44,29 @@ public class PilotoService {
     public String eliminarPiloto(int idPiloto){
         pilotoRepository.deleteById(idPiloto);
         return "Piloto eliminado de la lista";
+    }
+
+    //Mostrar datos del piloto DTO
+
+    public PilotoDatosDTO datosPilotoId (int idPiloto){
+        Piloto piloto = pilotoRepository.findById(idPiloto).orElse(null);
+        if (piloto == null) {
+            return null; 
+        }
+
+        PilotoDatosDTO dataPiloto = new PilotoDatosDTO();
+        dataPiloto.setIdPiloto(piloto.getIdPiloto());
+        dataPiloto.setRutPiloto(piloto.getRutPiloto());
+
+        String pNombre = (piloto.getPNombrePiloto() != null) ? piloto.getPNombrePiloto() : "";
+        String sNombre = (piloto.getSNombrePiloto() != null) ? piloto.getSNombrePiloto() : "";
+        String apPaterno = (piloto.getApPaternoPiloto() != null) ? piloto.getApPaternoPiloto() : "";
+        String apMaterno = (piloto.getApMaternoPiloto() != null) ? piloto.getApMaternoPiloto() : "";
+        String nombreCompleto = (pNombre + " " + sNombre + " " + apPaterno + " " + apMaterno).replaceAll("\\s+", " ").trim();                
+
+        dataPiloto.setNombreCompleto(nombreCompleto);
+        
+        return dataPiloto;
     }
 
 }

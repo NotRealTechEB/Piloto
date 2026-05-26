@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import cl.dgac.piloto.dto.CreatePilotoRequest;
+import cl.dgac.piloto.dto.PilotoDatosDTO;
 import cl.dgac.piloto.dto.UpdatePilotoRequest;
 import cl.dgac.piloto.mapper.PilotoMapper;
 import cl.dgac.piloto.model.Piloto;
@@ -26,11 +27,11 @@ import jakarta.validation.Valid;
 public class PilotoController {
     
     private final PilotoService pilotoService;
-    private final WebClient licenciaApiWebClient;
+    //private final WebClient licenciaApiWebClient;
 
-    public PilotoController(PilotoService pilotoService, WebClient licenciaApiWebClient){
+    public PilotoController(PilotoService pilotoService/*,WebClient licenciaApiWebClient*/){
         this.pilotoService = pilotoService;
-        this.licenciaApiWebClient = licenciaApiWebClient;
+    //    this.licenciaApiWebClient = licenciaApiWebClient;
     }
 
     //Obtener todos los pilotos
@@ -39,6 +40,17 @@ public class PilotoController {
     public ResponseEntity<List<Piloto>> listarPilotos(){
         List<Piloto> pilotos = pilotoService.obtenerPilotos();
         return ResponseEntity.ok(pilotos);
+    }
+    
+    //Obtener datos del piloto por su ID 
+
+    @GetMapping("{idPiloto}")
+    public ResponseEntity<?> datosPilotoID(@RequestParam("idPiloto") int idPiloto){
+        PilotoDatosDTO pilotoDatos = pilotoService.datosPilotoId(idPiloto);
+        if (pilotoDatos == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ID " + idPiloto + " no fue encontrada.");
+        }
+        return ResponseEntity.ok(pilotoDatos);
     }
 
     //Agregar nuevos pilotos

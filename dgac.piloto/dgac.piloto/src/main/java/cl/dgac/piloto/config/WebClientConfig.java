@@ -1,6 +1,6 @@
 package cl.dgac.piloto.config;
 
-import org.springframework.context.annotation.Bean;
+/*import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -11,4 +11,4 @@ public class WebClientConfig {
     public WebClient licenciaApiWebClient(WebClient.Builder builder){
         return builder.baseUrl("http://localhost:808x/api/v1/licencia").build();
     }
-}
+}*/
