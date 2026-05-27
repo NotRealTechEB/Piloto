@@ -3,8 +3,11 @@ package cl.dgac.piloto.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import cl.dgac.piloto.dto.LicenciaResponseDTO;
 import cl.dgac.piloto.dto.PilotoDatosDTO;
 import cl.dgac.piloto.model.Piloto;
 import cl.dgac.piloto.repository.PilotoRepository;
@@ -14,7 +17,11 @@ public class PilotoService {
     @Autowired
 
     private PilotoRepository pilotoRepository;
+    private WebClient licenciaApiWebClient;
 
+    public PilotoService(WebClient licenciaApiWebClient) {
+        this.licenciaApiWebClient = licenciaApiWebClient;
+    }
 
     //Opciones de obtener pilotos registrados//
 
@@ -67,6 +74,22 @@ public class PilotoService {
         dataPiloto.setNombreCompleto(nombreCompleto);
         
         return dataPiloto;
+    }
+
+    //Comunicación a API de Licencia
+
+    @Qualifier("licenciaApiWebClient")
+    public LicenciaResponseDTO consultarLicenciaPiloto(int idPiloto){
+        try{
+            return licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/dgac/licencia/validar").queryParam("idPiloto", String.valueOf(idPiloto)) 
+                                        .build()).retrieve().bodyToMono(LicenciaResponseDTO.class).block();
+        } catch (Exception ex){
+            LicenciaResponseDTO errResponseDTO = new LicenciaResponseDTO();
+            errResponseDTO.setIdPiloto((int)idPiloto);
+            errResponseDTO.setEstValidacion(false);
+            errResponseDTO.setAnotacion("No se puede conectar a API Licencias. Error: "+ ex.getMessage());
+            return errResponseDTO;
+        }
     }
 
 }
