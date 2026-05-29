@@ -9,6 +9,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import cl.dgac.piloto.dto.LicenciaResponseDTO;
 import cl.dgac.piloto.dto.PilotoDatosDTO;
+import cl.dgac.piloto.dto.ResumenLicenciaPilotoDTO;
+import cl.dgac.piloto.dto.UpdatePilotoRequest;
 import cl.dgac.piloto.model.Piloto;
 import cl.dgac.piloto.repository.PilotoRepository;
 
@@ -42,8 +44,22 @@ public class PilotoService {
 
     //Actualizar datos de los pilotos
 
-    public Piloto actualizarPiloto(Piloto piloto){
-        return pilotoRepository.save(piloto);
+    public Piloto actualizarPiloto(int idPiloto, UpdatePilotoRequest update){
+        Piloto pilotoExistente = pilotoRepository.findById(idPiloto).orElseThrow(() -> new RuntimeException("Piloto no encontrado"));
+
+    if (update.pNombrePiloto() != null) {
+        pilotoExistente.setPNombrePiloto(update.pNombrePiloto());
+    }
+    if (update.sNombrePiloto() != null) {
+        pilotoExistente.setSNombrePiloto(update.sNombrePiloto());
+    }
+    if (update.apPaternoPiloto() != null) {
+        pilotoExistente.setApPaternoPiloto(update.apPaternoPiloto());
+    }
+    if (update.apMaternoPiloto() != null) {
+        pilotoExistente.setApMaternoPiloto(update.apMaternoPiloto());
+    }
+    return pilotoRepository.save(pilotoExistente);
     }
 
     //Eliminar pilotos de la lista
@@ -76,20 +92,39 @@ public class PilotoService {
         return dataPiloto;
     }
 
-    //Comunicación a API de Licencia
+    //Comunicación a API de Licencia - Validación de estado
 
     @Qualifier("licenciaApiWebClient")
     public LicenciaResponseDTO consultarLicenciaPiloto(int idPiloto){
         try{
-            return licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/dgac/licencia/validar").queryParam("idPiloto", String.valueOf(idPiloto)) 
+            return licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/dgac/licencia/validar").queryParam("idPiloto", idPiloto) 
                                         .build()).retrieve().bodyToMono(LicenciaResponseDTO.class).block();
         } catch (Exception ex){
-            LicenciaResponseDTO errResponseDTO = new LicenciaResponseDTO();
-            errResponseDTO.setIdPiloto((int)idPiloto);
-            errResponseDTO.setEstValidacion(false);
-            errResponseDTO.setAnotacion("No se puede conectar a API Licencias. Error: "+ ex.getMessage());
-            return errResponseDTO;
+            LicenciaResponseDTO responseDTO = new LicenciaResponseDTO();
+            responseDTO.setIdPiloto(idPiloto);
+            responseDTO.setEstValidacion(false);
+            responseDTO.setAnotacion("No se puede conectar a API Licencias. Error: "+ ex.getMessage());
+            return responseDTO;
         }
     }
 
+    @Qualifier("licenciaApiWebClient") 
+    public ResumenLicenciaPilotoDTO consultarResumen(int idPiloto) {
+        try {
+            ResumenLicenciaPilotoDTO[] listaResumen = licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/dgac/licencia").queryParam("idPiloto", idPiloto) 
+                .build()).retrieve().bodyToMono(ResumenLicenciaPilotoDTO[].class).block(); 
+
+        if (listaResumen != null && listaResumen.length > 0) {
+            return listaResumen[0]; 
+        }
+        
+        return new ResumenLicenciaPilotoDTO();
+            
+        } catch (Exception ex) {
+            ResumenLicenciaPilotoDTO responseDTO = new ResumenLicenciaPilotoDTO();
+            responseDTO.setIdPiloto(idPiloto);
+            return responseDTO;
+        }
+    }
 }
+

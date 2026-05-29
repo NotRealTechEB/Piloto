@@ -64,7 +64,6 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleGeneralException(Exception ex) {
         System.out.println("EXCEPCIÓN CAPTURADA: " + ex.getClass().getName());
         System.out.println("Mensaje: " + ex.getMessage());
-        ex.printStackTrace();
 
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor");
 

@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import cl.dgac.piloto.dto.CreatePilotoRequest;
-import cl.dgac.piloto.dto.PilotoDatosDTO;
 import cl.dgac.piloto.dto.LicenciaResponseDTO;
+import cl.dgac.piloto.dto.PilotoDatosDTO;
+import cl.dgac.piloto.dto.ResumenLicenciaPilotoDTO;
 import cl.dgac.piloto.dto.UpdatePilotoRequest;
 import cl.dgac.piloto.mapper.PilotoMapper;
 import cl.dgac.piloto.model.Piloto;
@@ -25,7 +26,7 @@ import cl.dgac.piloto.service.PilotoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/v1/dgac/pilotos")
+@RequestMapping("/api/v1/dgac/pilotos")
 public class PilotoController {
     
     private final PilotoService pilotoService;
@@ -63,6 +64,14 @@ public class PilotoController {
         return ResponseEntity.ok(respuestaLicencia);
     }
 
+    //Obtener datos de piloto y su licencia
+
+    @GetMapping("/resumen")
+    public ResponseEntity<ResumenLicenciaPilotoDTO> resumenPilotoLicencia(@RequestParam("idPiloto") int idPiloto){
+        ResumenLicenciaPilotoDTO respuestaResumen = pilotoService.consultarResumen(idPiloto);
+        return ResponseEntity.ok(respuestaResumen);
+    }
+
     //Agregar nuevos pilotos
 
     @PostMapping
@@ -71,17 +80,17 @@ public class PilotoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(piloto);
     }
 
-    //Actualizar datos de pilotos
+    //Actualizar datos de pilotos (Parcial)
 
-    @PutMapping("{id}")
+    @PutMapping("{idPiloto}")
     public ResponseEntity<Piloto> actualizarPilotos(@PathVariable int idPiloto, @Valid @RequestBody UpdatePilotoRequest request){
-        Piloto actuPiloto = pilotoService.actualizarPiloto(PilotoMapper.toModel(request));
+        Piloto actuPiloto = pilotoService.actualizarPiloto(idPiloto, request);
         return ResponseEntity.ok(actuPiloto);
     }
 
     //Eliminar pilotos 
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("{idPiloto}")
     public ResponseEntity<Void> eliminarPiloto(@PathVariable int idPiloto){
         pilotoService.eliminarPiloto(idPiloto);
         return ResponseEntity.noContent().build();

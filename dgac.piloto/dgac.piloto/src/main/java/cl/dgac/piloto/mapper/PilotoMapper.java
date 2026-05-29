@@ -1,6 +1,7 @@
 package cl.dgac.piloto.mapper;
 
 import cl.dgac.piloto.dto.CreatePilotoRequest;
+import cl.dgac.piloto.dto.ResumenLicenciaPilotoDTO;
 import cl.dgac.piloto.dto.UpdatePilotoRequest;
 import cl.dgac.piloto.model.Piloto;
 
@@ -18,5 +19,21 @@ public class PilotoMapper {
             request.rutPiloto(), request.pNombrePiloto(), request.sNombrePiloto(), request.apPaternoPiloto(), request.apMaternoPiloto()
         );
         }
-}
+
+    public static ResumenLicenciaPilotoDTO toModel(Piloto piloto, ResumenLicenciaPilotoDTO licencia) {
+        ResumenLicenciaPilotoDTO dto = new ResumenLicenciaPilotoDTO();
+        dto.setIdPiloto(piloto.getIdPiloto());
+        dto.setRutPiloto(piloto.getRutPiloto());
+
+        String nombreCompleto = String.join(" ", 
+            piloto.getPNombrePiloto(), piloto.getSNombrePiloto(), piloto.getApPaternoPiloto(), piloto.getApMaternoPiloto());
+        dto.setNombreCompleto(nombreCompleto.trim().replaceAll("\\s+", " ")); 
+
+        dto.setIdLicencia(licencia.getIdLicencia());
+        dto.setEstVigencia(licencia.getEstVigencia());
+        
+        return dto;
+    }
+}    
+
 
