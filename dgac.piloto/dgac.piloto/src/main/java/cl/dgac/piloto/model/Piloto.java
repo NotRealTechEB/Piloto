@@ -25,6 +25,9 @@ public class Piloto {
     @Column(name = "rutPiloto", nullable=false)
     private int rutPiloto;
 
+    @Column(name = "rutEmpresa", nullable = false, length=12)
+    private String rutEmpresa;
+
     @Column(name = "pNombre", nullable = false, length = 30)
     private String pNombrePiloto;
 
@@ -37,5 +40,6 @@ public class Piloto {
     @Column(name = "apMaterno", nullable = false, length = 30)
     private String apMaternoPiloto;
 
+    
 
 }

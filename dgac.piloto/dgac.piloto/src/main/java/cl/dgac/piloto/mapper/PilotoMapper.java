@@ -9,14 +9,14 @@ public class PilotoMapper {
     public static Piloto toModel(CreatePilotoRequest request) {
         return new Piloto(
             0, 
-            request.rutPiloto(), request.pNombrePiloto(), request.sNombrePiloto(), request.apPaternoPiloto(), request.apMaternoPiloto()
+            request.rutPiloto(), request.rutEmp(), request.pNombrePiloto(), request.sNombrePiloto(), request.apPaternoPiloto(), request.apMaternoPiloto()
         );
         }
 
     public static Piloto toModel(UpdatePilotoRequest request) {
         return new Piloto(
             0, 
-            request.rutPiloto(), request.pNombrePiloto(), request.sNombrePiloto(), request.apPaternoPiloto(), request.apMaternoPiloto()
+            request.rutPiloto(), request.rutEmp(), request.pNombrePiloto(), request.sNombrePiloto(), request.apPaternoPiloto(), request.apMaternoPiloto()
         );
         }
 

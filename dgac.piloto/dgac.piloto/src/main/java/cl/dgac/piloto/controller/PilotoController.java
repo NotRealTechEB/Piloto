@@ -58,7 +58,7 @@ public class PilotoController {
 
     //Obtener piloto y el estado de su licencia
     
-    @GetMapping("licencia/validar")
+    @GetMapping("licencia-validar")
     public ResponseEntity<LicenciaResponseDTO> estadoLicenciaPiloto (@RequestParam("idPiloto") int idPiloto){
         LicenciaResponseDTO respuestaLicencia = pilotoService.consultarLicenciaPiloto(idPiloto);
         return ResponseEntity.ok(respuestaLicencia);
