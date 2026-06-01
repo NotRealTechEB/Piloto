@@ -1,8 +1,6 @@
 package cl.dgac.piloto.dto;
 
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public record UpdatePilotoRequest(
@@ -14,8 +12,9 @@ public record UpdatePilotoRequest(
     @NotNull(message = "Debe ingresar el apellido materno del piloto") String apMaternoPiloto,
 
     //Ingreso de rut
-    @Positive(message = "El rut no puede ser negativo o igual a cero") 
-    @Digits(integer = 9, fraction = 0, message = "El rut no puede tener más de 9 dígitos") int rutPiloto,
+    @NotNull(message = "El rut no puede ser negativo o igual a cero") 
+    @Size(max=12, message = "El rut no puede tener más de 9 dígitos")
+    String rutPiloto,
 
     //Ingreso de rut empresa
     @NotNull(message = "Debe ingresar el rut de la empresa")

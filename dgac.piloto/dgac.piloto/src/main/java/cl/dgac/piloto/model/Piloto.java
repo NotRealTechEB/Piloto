@@ -23,7 +23,7 @@ public class Piloto {
     private int idPiloto;
 
     @Column(name = "rutPiloto", nullable=false)
-    private int rutPiloto;
+    private String rutPiloto;
 
     @Column(name = "rutEmpresa", nullable = false, length=12)
     private String rutEmpresa;

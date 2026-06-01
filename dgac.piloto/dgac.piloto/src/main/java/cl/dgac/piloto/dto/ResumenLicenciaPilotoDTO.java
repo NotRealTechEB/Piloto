@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class ResumenLicenciaPilotoDTO {
-    private int idPiloto;
-    private int rutPiloto;
+
+    private String rutPiloto;
     private String nombreCompleto;
 
-    private int idLicencia;
     private String estVigencia;
 }

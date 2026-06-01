@@ -22,14 +22,12 @@ public class PilotoMapper {
 
     public static ResumenLicenciaPilotoDTO toModel(Piloto piloto, ResumenLicenciaPilotoDTO licencia) {
         ResumenLicenciaPilotoDTO dto = new ResumenLicenciaPilotoDTO();
-        dto.setIdPiloto(piloto.getIdPiloto());
         dto.setRutPiloto(piloto.getRutPiloto());
 
         String nombreCompleto = String.join(" ", 
             piloto.getPNombrePiloto(), piloto.getSNombrePiloto(), piloto.getApPaternoPiloto(), piloto.getApMaternoPiloto());
         dto.setNombreCompleto(nombreCompleto.trim().replaceAll("\\s+", " ")); 
 
-        dto.setIdLicencia(licencia.getIdLicencia());
         dto.setEstVigencia(licencia.getEstVigencia());
         
         return dto;

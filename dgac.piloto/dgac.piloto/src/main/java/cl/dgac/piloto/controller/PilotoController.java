@@ -17,7 +17,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import cl.dgac.piloto.dto.CreatePilotoRequest;
 import cl.dgac.piloto.dto.LicenciaResponseDTO;
-import cl.dgac.piloto.dto.PilotoDatosDTO;
 import cl.dgac.piloto.dto.ResumenLicenciaPilotoDTO;
 import cl.dgac.piloto.dto.UpdatePilotoRequest;
 import cl.dgac.piloto.mapper.PilotoMapper;
@@ -26,7 +25,7 @@ import cl.dgac.piloto.service.PilotoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/dgac/pilotos")
+@RequestMapping("/api/v1/pilotos")
 public class PilotoController {
     
     private final PilotoService pilotoService;
@@ -44,17 +43,6 @@ public class PilotoController {
         List<Piloto> pilotos = pilotoService.obtenerPilotos();
         return ResponseEntity.ok(pilotos);
     }
-    
-    //Obtener datos del piloto por su ID 
-
-    @GetMapping("{idPiloto}")
-    public ResponseEntity<?> datosPilotoID(@RequestParam("idPiloto") int idPiloto){
-        PilotoDatosDTO pilotoDatos = pilotoService.datosPilotoId(idPiloto);
-        if (pilotoDatos == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ID " + idPiloto + " no fue encontrada.");
-        }
-        return ResponseEntity.ok(pilotoDatos);
-    }
 
     //Obtener piloto y el estado de su licencia
     
@@ -67,8 +55,8 @@ public class PilotoController {
     //Obtener datos de piloto y su licencia
 
     @GetMapping("/resumen")
-    public ResponseEntity<ResumenLicenciaPilotoDTO> resumenPilotoLicencia(@RequestParam("idPiloto") int idPiloto){
-        ResumenLicenciaPilotoDTO respuestaResumen = pilotoService.consultarResumen(idPiloto);
+    public ResponseEntity<ResumenLicenciaPilotoDTO> resumenPilotoLicencia(@RequestParam("rutPiloto") String rutPiloto){
+        ResumenLicenciaPilotoDTO respuestaResumen = pilotoService.consultarResumen(rutPiloto);
         return ResponseEntity.ok(respuestaResumen);
     }
 

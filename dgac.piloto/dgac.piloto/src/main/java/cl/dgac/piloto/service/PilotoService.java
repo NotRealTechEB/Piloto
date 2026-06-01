@@ -3,12 +3,10 @@ package cl.dgac.piloto.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import cl.dgac.piloto.dto.LicenciaResponseDTO;
-import cl.dgac.piloto.dto.PilotoDatosDTO;
 import cl.dgac.piloto.dto.ResumenLicenciaPilotoDTO;
 import cl.dgac.piloto.dto.UpdatePilotoRequest;
 import cl.dgac.piloto.model.Piloto;
@@ -46,20 +44,11 @@ public class PilotoService {
 
     public Piloto actualizarPiloto(int idPiloto, UpdatePilotoRequest update){
         Piloto pilotoExistente = pilotoRepository.findById(idPiloto).orElseThrow(() -> new RuntimeException("Piloto no encontrado"));
-
-    if (update.pNombrePiloto() != null) {
         pilotoExistente.setPNombrePiloto(update.pNombrePiloto());
-    }
-    if (update.sNombrePiloto() != null) {
         pilotoExistente.setSNombrePiloto(update.sNombrePiloto());
-    }
-    if (update.apPaternoPiloto() != null) {
         pilotoExistente.setApPaternoPiloto(update.apPaternoPiloto());
-    }
-    if (update.apMaternoPiloto() != null) {
         pilotoExistente.setApMaternoPiloto(update.apMaternoPiloto());
-    }
-    return pilotoRepository.save(pilotoExistente);
+        return pilotoRepository.save(pilotoExistente);
     }
 
     //Eliminar pilotos de la lista
@@ -69,49 +58,23 @@ public class PilotoService {
         return "Piloto eliminado de la lista";
     }
 
-    //Mostrar datos del piloto DTO
-
-    public PilotoDatosDTO datosPilotoId (int idPiloto){
-        Piloto piloto = pilotoRepository.findById(idPiloto).orElse(null);
-        if (piloto == null) {
-            return null; 
-        }
-
-        PilotoDatosDTO dataPiloto = new PilotoDatosDTO();
-        dataPiloto.setIdPiloto(piloto.getIdPiloto());
-        dataPiloto.setRutPiloto(piloto.getRutPiloto());
-
-        String pNombre = (piloto.getPNombrePiloto() != null) ? piloto.getPNombrePiloto() : "";
-        String sNombre = (piloto.getSNombrePiloto() != null) ? piloto.getSNombrePiloto() : "";
-        String apPaterno = (piloto.getApPaternoPiloto() != null) ? piloto.getApPaternoPiloto() : "";
-        String apMaterno = (piloto.getApMaternoPiloto() != null) ? piloto.getApMaternoPiloto() : "";
-        String nombreCompleto = (pNombre + " " + sNombre + " " + apPaterno + " " + apMaterno).replaceAll("\\s+", " ").trim();                
-
-        dataPiloto.setNombreCompleto(nombreCompleto);
-        
-        return dataPiloto;
-    }
-
     //Comunicación a API de Licencia - Validación de estado
 
-    @Qualifier("licenciaApiWebClient")
     public LicenciaResponseDTO consultarLicenciaPiloto(int idPiloto){
         try{
-            return licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/dgac/licencia/validar").queryParam("idPiloto", idPiloto) 
+            return licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/licencia/validar").queryParam("idPiloto", idPiloto) 
                                         .build()).retrieve().bodyToMono(LicenciaResponseDTO.class).block();
         } catch (Exception ex){
             LicenciaResponseDTO responseDTO = new LicenciaResponseDTO();
-            responseDTO.setIdPiloto(idPiloto);
             responseDTO.setEstValidacion(false);
             responseDTO.setAnotacion("No se puede conectar a API Licencias. Error: "+ ex.getMessage());
             return responseDTO;
         }
     }
 
-    @Qualifier("licenciaApiWebClient") 
-    public ResumenLicenciaPilotoDTO consultarResumen(int idPiloto) {
+    public ResumenLicenciaPilotoDTO consultarResumen(String rutPiloto) {
         try {
-            ResumenLicenciaPilotoDTO[] listaResumen = licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/dgac/licencia").queryParam("idPiloto", idPiloto) 
+            ResumenLicenciaPilotoDTO[] listaResumen = licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/licencia").queryParam("rut", rutPiloto) 
                 .build()).retrieve().bodyToMono(ResumenLicenciaPilotoDTO[].class).block(); 
 
         if (listaResumen != null && listaResumen.length > 0) {
@@ -122,9 +85,8 @@ public class PilotoService {
             
         } catch (Exception ex) {
             ResumenLicenciaPilotoDTO responseDTO = new ResumenLicenciaPilotoDTO();
-            responseDTO.setIdPiloto(idPiloto);
+
             return responseDTO;
         }
     }
 }
-
