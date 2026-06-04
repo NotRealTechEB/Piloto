@@ -9,6 +9,6 @@ public class WebClientConfig {
     
     @Bean(name="licenciaApiWebClient")
     public WebClient licenciaApiWebClient(){
-        return WebClient.builder().baseUrl("http://localhost:8082").build();
+        return WebClient.builder().baseUrl("http://localhost:8085").build();
     }
 }

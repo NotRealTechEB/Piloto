@@ -16,9 +16,9 @@ public record UpdatePilotoRequest(
     @Size(max=12, message = "El rut no puede tener más de 9 dígitos")
     String rutPiloto,
 
-    //Ingreso de rut empresa
-    @NotNull(message = "Debe ingresar el rut de la empresa")
-    @Size(max=15, message = "El rut no puede tener más de 15 caracteres") String rutEmp
+    //Ingreso de nombre empresa
+    @NotNull(message = "Debe ingresar el nombre de la empresa")
+    @Size(max=100, message = "El nombre no puede tener más de 100 caracteres") String nombreEmp
     )
     {
 }

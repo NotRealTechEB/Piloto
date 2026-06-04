@@ -2,28 +2,30 @@ package cl.dgac.piloto.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import cl.dgac.piloto.dto.LicenciaResponseDTO;
 import cl.dgac.piloto.dto.ResumenLicenciaPilotoDTO;
 import cl.dgac.piloto.dto.UpdatePilotoRequest;
+import cl.dgac.piloto.exception.ResourceNotFoundException;
 import cl.dgac.piloto.model.Piloto;
 import cl.dgac.piloto.repository.PilotoRepository;
 
 @Service
 public class PilotoService {
-    @Autowired
 
     private PilotoRepository pilotoRepository;
     private WebClient licenciaApiWebClient;
 
-    public PilotoService(WebClient licenciaApiWebClient) {
+    public PilotoService(PilotoRepository pilotoRepository, WebClient licenciaApiWebClient) {
+        this.pilotoRepository = pilotoRepository;
         this.licenciaApiWebClient = licenciaApiWebClient;
     }
 
-    //Opciones de obtener pilotos registrados//
+    //-------------------------------Metodos de administracion-------------------------------//
+
+    //Opciones de obtener pilotos registrados
 
         //Todos los pilotos registrados
     public List<Piloto> obtenerPilotos(){
@@ -43,7 +45,7 @@ public class PilotoService {
     //Actualizar datos de los pilotos
 
     public Piloto actualizarPiloto(int idPiloto, UpdatePilotoRequest update){
-        Piloto pilotoExistente = pilotoRepository.findById(idPiloto).orElseThrow(() -> new RuntimeException("Piloto no encontrado"));
+        Piloto pilotoExistente = pilotoRepository.findById(idPiloto).orElseThrow(() -> new ResourceNotFoundException("Piloto no encontrado"));
         pilotoExistente.setPNombrePiloto(update.pNombrePiloto());
         pilotoExistente.setSNombrePiloto(update.sNombrePiloto());
         pilotoExistente.setApPaternoPiloto(update.apPaternoPiloto());
@@ -58,11 +60,14 @@ public class PilotoService {
         return "Piloto eliminado de la lista";
     }
 
+
+    //-------------------------------Metodos HU - Piloto-------------------------------//
+
     //Comunicación a API de Licencia - Validación de estado
 
-    public LicenciaResponseDTO consultarLicenciaPiloto(int idPiloto){
+    public LicenciaResponseDTO consultarLicenciaPiloto(String rutPiloto){
         try{
-            return licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/licencia/validar").queryParam("idPiloto", idPiloto) 
+            return licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/licencia/validar").queryParam("rut", rutPiloto) 
                                         .build()).retrieve().bodyToMono(LicenciaResponseDTO.class).block();
         } catch (Exception ex){
             LicenciaResponseDTO responseDTO = new LicenciaResponseDTO();
@@ -73,20 +78,26 @@ public class PilotoService {
     }
 
     public ResumenLicenciaPilotoDTO consultarResumen(String rutPiloto) {
-        try {
-            ResumenLicenciaPilotoDTO[] listaResumen = licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/licencia").queryParam("rut", rutPiloto) 
-                .build()).retrieve().bodyToMono(ResumenLicenciaPilotoDTO[].class).block(); 
+    try {
+        ResumenLicenciaPilotoDTO resumenDTO = licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/licencia/validar").queryParam("rut", rutPiloto).build())
+            .retrieve().bodyToMono(ResumenLicenciaPilotoDTO.class).block();
 
-        if (listaResumen != null && listaResumen.length > 0) {
-            return listaResumen[0]; 
+        ResumenLicenciaPilotoDTO dto = new ResumenLicenciaPilotoDTO();
+
+        List<Piloto> pilotoLocal = pilotoRepository.findByRutPiloto(rutPiloto);
+
+        if (pilotoLocal != null && !pilotoLocal.isEmpty()) {
+            Piloto piloto = pilotoLocal.get(0); 
+            dto.setRutPiloto(piloto.getRutPiloto()); 
+            dto.setPrimerNombre(piloto.getPNombrePiloto());
+            dto.setSegundoNombre(piloto.getApPaternoPiloto());
+            dto.setApellidoMaterno(piloto.getApMaternoPiloto());
         }
-        
+        return dto;
+
+    } catch (Exception ex) {
+        System.out.println("Error al conectar Licencia API: " + ex.getMessage());
         return new ResumenLicenciaPilotoDTO();
-            
-        } catch (Exception ex) {
-            ResumenLicenciaPilotoDTO responseDTO = new ResumenLicenciaPilotoDTO();
-
-            return responseDTO;
-        }
     }
+}
 }

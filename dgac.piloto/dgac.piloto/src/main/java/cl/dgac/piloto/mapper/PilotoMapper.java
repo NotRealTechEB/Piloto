@@ -9,25 +9,20 @@ public class PilotoMapper {
     public static Piloto toModel(CreatePilotoRequest request) {
         return new Piloto(
             0, 
-            request.rutPiloto(), request.rutEmp(), request.pNombrePiloto(), request.sNombrePiloto(), request.apPaternoPiloto(), request.apMaternoPiloto()
+            request.rutPiloto(), request.nombreEmp(), request.pNombrePiloto(), request.sNombrePiloto(), request.apPaternoPiloto(), request.apMaternoPiloto()
         );
         }
 
     public static Piloto toModel(UpdatePilotoRequest request) {
         return new Piloto(
             0, 
-            request.rutPiloto(), request.rutEmp(), request.pNombrePiloto(), request.sNombrePiloto(), request.apPaternoPiloto(), request.apMaternoPiloto()
+            request.rutPiloto(), request.nombreEmp(), request.pNombrePiloto(), request.sNombrePiloto(), request.apPaternoPiloto(), request.apMaternoPiloto()
         );
         }
 
     public static ResumenLicenciaPilotoDTO toModel(Piloto piloto, ResumenLicenciaPilotoDTO licencia) {
         ResumenLicenciaPilotoDTO dto = new ResumenLicenciaPilotoDTO();
         dto.setRutPiloto(piloto.getRutPiloto());
-
-        String nombreCompleto = String.join(" ", 
-            piloto.getPNombrePiloto(), piloto.getSNombrePiloto(), piloto.getApPaternoPiloto(), piloto.getApMaternoPiloto());
-        dto.setNombreCompleto(nombreCompleto.trim().replaceAll("\\s+", " ")); 
-
         dto.setEstVigencia(licencia.getEstVigencia());
         
         return dto;

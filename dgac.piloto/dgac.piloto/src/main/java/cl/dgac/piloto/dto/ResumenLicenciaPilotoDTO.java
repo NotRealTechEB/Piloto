@@ -11,7 +11,13 @@ import lombok.NoArgsConstructor;
 public class ResumenLicenciaPilotoDTO {
 
     private String rutPiloto;
-    private String nombreCompleto;
+    private String primerNombre;
+    private String segundoNombre;
+    private String apellidoPaterno;
+    private String apellidoMaterno;
 
+    private String nombreEmpresa;
     private String estVigencia;
+    
+    
 }

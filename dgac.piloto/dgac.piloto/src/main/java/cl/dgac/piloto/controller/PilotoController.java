@@ -36,28 +36,14 @@ public class PilotoController {
         this.licenciaApiWebClient = licenciaApiWebClient;
     }
 
+    //-------------------------------Metodos de administracion-------------------------------//
+
     //Obtener todos los pilotos
 
     @GetMapping
     public ResponseEntity<List<Piloto>> listarPilotos(){
         List<Piloto> pilotos = pilotoService.obtenerPilotos();
         return ResponseEntity.ok(pilotos);
-    }
-
-    //Obtener piloto y el estado de su licencia
-    
-    @GetMapping("licencia-validar")
-    public ResponseEntity<LicenciaResponseDTO> estadoLicenciaPiloto (@RequestParam("idPiloto") int idPiloto){
-        LicenciaResponseDTO respuestaLicencia = pilotoService.consultarLicenciaPiloto(idPiloto);
-        return ResponseEntity.ok(respuestaLicencia);
-    }
-
-    //Obtener datos de piloto y su licencia
-
-    @GetMapping("/resumen")
-    public ResponseEntity<ResumenLicenciaPilotoDTO> resumenPilotoLicencia(@RequestParam("rutPiloto") String rutPiloto){
-        ResumenLicenciaPilotoDTO respuestaResumen = pilotoService.consultarResumen(rutPiloto);
-        return ResponseEntity.ok(respuestaResumen);
     }
 
     //Agregar nuevos pilotos
@@ -70,19 +56,42 @@ public class PilotoController {
 
     //Actualizar datos de pilotos (Parcial)
 
-    @PutMapping("{idPiloto}")
-    public ResponseEntity<Piloto> actualizarPilotos(@PathVariable int idPiloto, @Valid @RequestBody UpdatePilotoRequest request){
+    @PutMapping("/{idPiloto}")
+    public ResponseEntity<Piloto> actualizarPilotos(@PathVariable("idPiloto") int idPiloto, @Valid @RequestBody UpdatePilotoRequest request){
         Piloto actuPiloto = pilotoService.actualizarPiloto(idPiloto, request);
         return ResponseEntity.ok(actuPiloto);
     }
 
     //Eliminar pilotos 
 
-    @DeleteMapping("{idPiloto}")
-    public ResponseEntity<Void> eliminarPiloto(@PathVariable int idPiloto){
+    @DeleteMapping("/{idPiloto}")
+    public ResponseEntity<Void> eliminarPiloto(@PathVariable("idPiloto") int idPiloto){
         pilotoService.eliminarPiloto(idPiloto);
         return ResponseEntity.noContent().build();
 
     }
 
+    //-------------------------------Metodos HU - Piloto-------------------------------//
+
+    //Obtener datos de piloto y su licencia
+
+    @GetMapping("/resumen")
+    public ResponseEntity<ResumenLicenciaPilotoDTO> resumenPilotoLicencia(@RequestParam("rut") String rutPiloto){
+        ResumenLicenciaPilotoDTO respuestaResumen = pilotoService.consultarResumen(rutPiloto);
+        return ResponseEntity.ok(respuestaResumen);
+    }
+
+    //Obtener piloto y el estado de su licencia
+    
+    @GetMapping("licencia-validar")
+    public ResponseEntity<LicenciaResponseDTO> estadoLicenciaPiloto (@RequestParam("rut") String rutPiloto){
+        LicenciaResponseDTO respuestaLicencia = pilotoService.consultarLicenciaPiloto(rutPiloto);
+        return ResponseEntity.ok(respuestaLicencia);
+    }
+
+    @GetMapping("/datos-piloto")
+    public ResponseEntity<ResumenLicenciaPilotoDTO> datosPiloto(@RequestParam("rut") String rutPiloto){
+        ResumenLicenciaPilotoDTO datosPiloto = pilotoService.consultarResumen(rutPiloto);
+        return ResponseEntity.ok(datosPiloto);
+    }
 }
