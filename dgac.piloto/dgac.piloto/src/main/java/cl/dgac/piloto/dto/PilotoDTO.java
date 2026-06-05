@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class ResumenLicenciaPilotoDTO {
+public class PilotoDTO {
 
     private String rutPiloto;
     private String primerNombre;
@@ -16,8 +16,5 @@ public class ResumenLicenciaPilotoDTO {
     private String apellidoPaterno;
     private String apellidoMaterno;
 
-    private String nombreEmpresa;
-    private String estVigencia;
-    
-    
+    private String nombreEmp;
 }

@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import cl.dgac.piloto.dto.CreatePilotoRequest;
-import cl.dgac.piloto.dto.LicenciaResponseDTO;
-import cl.dgac.piloto.dto.ResumenLicenciaPilotoDTO;
+import cl.dgac.piloto.dto.PilotoDTO;
 import cl.dgac.piloto.dto.UpdatePilotoRequest;
 import cl.dgac.piloto.mapper.PilotoMapper;
 import cl.dgac.piloto.model.Piloto;
@@ -73,25 +72,11 @@ public class PilotoController {
 
     //-------------------------------Metodos HU - Piloto-------------------------------//
 
-    //Obtener datos de piloto y su licencia
-
-    @GetMapping("/resumen")
-    public ResponseEntity<ResumenLicenciaPilotoDTO> resumenPilotoLicencia(@RequestParam("rut") String rutPiloto){
-        ResumenLicenciaPilotoDTO respuestaResumen = pilotoService.consultarResumen(rutPiloto);
-        return ResponseEntity.ok(respuestaResumen);
-    }
-
     //Obtener piloto y el estado de su licencia
-    
-    @GetMapping("licencia-validar")
-    public ResponseEntity<LicenciaResponseDTO> estadoLicenciaPiloto (@RequestParam("rut") String rutPiloto){
-        LicenciaResponseDTO respuestaLicencia = pilotoService.consultarLicenciaPiloto(rutPiloto);
-        return ResponseEntity.ok(respuestaLicencia);
-    }
 
     @GetMapping("/datos-piloto")
-    public ResponseEntity<ResumenLicenciaPilotoDTO> datosPiloto(@RequestParam("rut") String rutPiloto){
-        ResumenLicenciaPilotoDTO datosPiloto = pilotoService.consultarResumen(rutPiloto);
+    public ResponseEntity<PilotoDTO> datosPiloto(@RequestParam("rut") String rutPiloto){
+        PilotoDTO datosPiloto = pilotoService.consultarResumen(rutPiloto);
         return ResponseEntity.ok(datosPiloto);
     }
 }

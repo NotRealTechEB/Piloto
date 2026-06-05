@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import cl.dgac.piloto.dto.LicenciaResponseDTO;
-import cl.dgac.piloto.dto.ResumenLicenciaPilotoDTO;
+import cl.dgac.piloto.dto.PilotoDTO;
 import cl.dgac.piloto.dto.UpdatePilotoRequest;
 import cl.dgac.piloto.exception.ResourceNotFoundException;
+import cl.dgac.piloto.mapper.PilotoMapper;
 import cl.dgac.piloto.model.Piloto;
 import cl.dgac.piloto.repository.PilotoRepository;
 
@@ -63,41 +63,18 @@ public class PilotoService {
 
     //-------------------------------Metodos HU - Piloto-------------------------------//
 
-    //Comunicación a API de Licencia - Validación de estado
-
-    public LicenciaResponseDTO consultarLicenciaPiloto(String rutPiloto){
-        try{
-            return licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/licencia/validar").queryParam("rut", rutPiloto) 
-                                        .build()).retrieve().bodyToMono(LicenciaResponseDTO.class).block();
-        } catch (Exception ex){
-            LicenciaResponseDTO responseDTO = new LicenciaResponseDTO();
-            responseDTO.setEstValidacion(false);
-            responseDTO.setAnotacion("No se puede conectar a API Licencias. Error: "+ ex.getMessage());
-            return responseDTO;
-        }
-    }
-
-    public ResumenLicenciaPilotoDTO consultarResumen(String rutPiloto) {
+    public PilotoDTO consultarResumen(String rutPiloto) {
     try {
-        ResumenLicenciaPilotoDTO resumenDTO = licenciaApiWebClient.get().uri(uriBuilder -> uriBuilder.path("/api/v1/licencia/validar").queryParam("rut", rutPiloto).build())
-            .retrieve().bodyToMono(ResumenLicenciaPilotoDTO.class).block();
-
-        ResumenLicenciaPilotoDTO dto = new ResumenLicenciaPilotoDTO();
-
         List<Piloto> pilotoLocal = pilotoRepository.findByRutPiloto(rutPiloto);
 
-        if (pilotoLocal != null && !pilotoLocal.isEmpty()) {
+        if (pilotoLocal != null && !pilotoLocal.isEmpty()) { 
             Piloto piloto = pilotoLocal.get(0); 
-            dto.setRutPiloto(piloto.getRutPiloto()); 
-            dto.setPrimerNombre(piloto.getPNombrePiloto());
-            dto.setSegundoNombre(piloto.getApPaternoPiloto());
-            dto.setApellidoMaterno(piloto.getApMaternoPiloto());
+            return PilotoMapper.toModel(piloto); 
         }
-        return dto;
-
     } catch (Exception ex) {
-        System.out.println("Error al conectar Licencia API: " + ex.getMessage());
-        return new ResumenLicenciaPilotoDTO();
+        System.out.println("Error al encontrar piloto con ese rut: " + ex.getMessage());
     }
+
+    return new PilotoDTO();
 }
 }
