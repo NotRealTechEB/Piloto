@@ -9,6 +9,6 @@ public class WebClientConfig {
     
     @Bean(name="licenciaApiWebClient")
     public WebClient licenciaApiWebClient(){
-        return WebClient.builder().baseUrl("http://localhost:8085").build();
+        return WebClient.builder().baseUrl("https://licencia-bvee.onrender.com").build();
     }
 }
